@@ -11,9 +11,11 @@ public class DetailService {
 
 	@Autowired
 	private DetailRepository detailRepository;
+    
 	
 	public Detail getDetailByLicensePlate(String licensePlate) {
 		return detailRepository.findByLicensePlate(licensePlate)
 				.orElseThrow(() -> new RuntimeException("Not Fount"));
 	}
+	
 }
