@@ -33,7 +33,7 @@ public class MqttService {
         }
         
         Detail detail = getDetailByLicensePlate(licensePlate);
-        
+        System.out.println(detail);
         client.publishWith().topic("test/topic").qos(MqttQos.AT_LEAST_ONCE).payload(formatPublish(detail).getBytes()).send();
         client.disconnect();
     }
