@@ -16,10 +16,6 @@ public class HistoryService {
 	
 	public List<History> findAllHistories() {
 		List<History> histories = historyRepository.findAllHistories();
-		
-//		if(histories.isEmpty()) {
-//			throw(new RuntimeException("Not Found"));
-//		}
 		return histories;
 	}
 	
