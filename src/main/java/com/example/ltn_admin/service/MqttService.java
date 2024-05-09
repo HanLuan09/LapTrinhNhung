@@ -16,6 +16,9 @@ import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 public class MqttService {
 	
 	@Autowired
+	private DetailService detailService;
+	
+	@Autowired
 	private DetailRepository detailRepository;
 	
 	private Mqtt5BlockingClient client;
@@ -30,14 +33,15 @@ public class MqttService {
         client.connect();
         if(client.getState() == MqttClientState.CONNECTED) {
         	System.out.println("MQTT connected");
-        }
-        
-        Detail detail = getDetailByLicensePlate(licensePlate);
-        System.out.println(detail);
-        client.publishWith().topic("test/topic").qos(MqttQos.AT_LEAST_ONCE).payload(formatPublish(detail).getBytes()).send();
- 
-        client.publishWith().topic("nhom7/servo").qos(MqttQos.AT_LEAST_ONCE).payload("1".getBytes()).send();
-        client.disconnect();
+       
+	        Detail detail = getDetailByLicensePlate(licensePlate);
+	        boolean result = detailService.updateEtcBalance(licensePlate);
+	        System.out.println(detail);
+	        client.publishWith().topic("test/topic").qos(MqttQos.AT_LEAST_ONCE).payload(formatPublish(detail).getBytes()).send();
+	 
+	        client.publishWith().topic("nhom7/servo").qos(MqttQos.AT_LEAST_ONCE).payload("1".getBytes()).send();
+	        client.disconnect();
+    	}
     }
     
     public Detail getDetailByLicensePlate(String licensePlate) {

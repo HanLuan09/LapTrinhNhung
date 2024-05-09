@@ -23,12 +23,6 @@ import com.example.ltn_admin.service.MqttService;
 public class MainController {
 	
 	@Autowired
-	private DetailService detailService;
-	
-	@Autowired
-	private HistoryService historyService;
-	
-	@Autowired
 	private MqttService mqttService;
 	
 	
@@ -39,17 +33,4 @@ public class MainController {
 	    mqttService.MqttPublisher(licensePlate);
 	    return "licensePlate";
 	}
-	
-	@GetMapping("/history")
-	public List<History> findAllHistories(){
-		List<History> histories = historyService.findAllHistories();
-		return histories;
-	}
-	
-	@GetMapping("/history/{idDetail}")
-	public List<History> findAllHistoriesByUser(@PathVariable("idDetail") int idDetail){
-		List<History> histories = historyService.findAllHistoriesByUser(idDetail);
-		return histories;
-	}
-
 }
