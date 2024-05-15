@@ -61,7 +61,7 @@ public class HistoryController {
 		return apiResponse;
 	}
 	
-	@GetMapping("/history/user/date/{idDetail}")
+	@PostMapping("/history/user/date/{idDetail}")
 	public ApiResponse<List<History>> getAllHistoriesByUserAndDate(@PathVariable("idDetail") int idDetail, @RequestBody DateSearchRequest dateSearchRequest) throws ParseException{
 		List<History> histories = historyService.findAllHistoriesByUserAndDate(idDetail, dateSearchRequest);
 		ApiResponse<List<History>> apiResponse = ApiResponse.<List<History>>builder()

@@ -41,6 +41,9 @@ public class HistoryService {
 		Date startDate = new java.sql.Date(sdf.parse(dateSearchRequest.getStartDate()).getTime());
 		Date endDate = new java.sql.Date(sdf.parse(dateSearchRequest.getEndDate()).getTime());
 		List<History> histories = historyRepository.findAllHistoriesByDate(startDate, endDate);
+		if(histories.isEmpty()) {
+			throw(new RuntimeException("Not Found"));
+		}
 		return histories;
 	}
 	
