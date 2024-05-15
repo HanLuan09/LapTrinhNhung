@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,7 +49,7 @@ public class HistoryController {
 		return apiResponse;
 	}
 	
-	@GetMapping("/history/date")
+	@PostMapping("/history/date")
 	public ApiResponse<List<History>> getAllHistoriesByDate(@RequestBody DateSearchRequest dateSearchRequest) throws ParseException{
 		List<History> histories = historyService.findAllHistoriesByDate(dateSearchRequest);
 		ApiResponse<List<History>> apiResponse = ApiResponse.<List<History>>builder()
@@ -67,6 +68,18 @@ public class HistoryController {
 				.success(true)
 				.code(200)
 				.result(histories)
+				.message("success")
+				.build();
+		return apiResponse;
+	}
+	
+	@PostMapping("/history/add/{idDetail}")
+	public ApiResponse<Boolean> addHistory(@PathVariable("idDetail") int idDetail) throws ParseException{
+		historyService.addHistory(idDetail);
+		ApiResponse<Boolean> apiResponse = ApiResponse.<Boolean>builder()
+				.success(true)
+				.code(200)
+				.result(true)
 				.message("success")
 				.build();
 		return apiResponse;

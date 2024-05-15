@@ -17,13 +17,16 @@ public class MqttService {
 	
 	@Autowired
 	private DetailService detailService;
+	@Autowired
+	private HistoryService historyService;
 	
 	@Autowired
 	private DetailRepository detailRepository;
 	
 	private Mqtt5BlockingClient client;
+	
    
-
+	
     public void MqttPublisher(String licensePlate) {
     	client = Mqtt5Client.builder()
     	        .identifier(UUID.randomUUID().toString())
@@ -35,11 +38,22 @@ public class MqttService {
         	System.out.println("MQTT connected");
        
 	        Detail detail = getDetailByLicensePlate(licensePlate);
-	        boolean result = detailService.updateEtcBalance(licensePlate);
-	        System.out.println(detail);
-	        client.publishWith().topic("test/topic").qos(MqttQos.AT_LEAST_ONCE).payload(formatPublish(detail).getBytes()).send();
-	 
-	        client.publishWith().topic("nhom7/servo").qos(MqttQos.AT_LEAST_ONCE).payload("1".getBytes()).send();
+	       
+	        if(detail != null) {
+	        	client.publishWith().topic("nhom7/license_plate").qos(MqttQos.AT_LEAST_ONCE).payload(formatPublish(detail).getBytes()).send();
+	        	boolean result = detailService.updateEtcBalance(licensePlate);
+	        	
+		        System.out.println(detail);
+		        if(result) {
+		        	historyService.addHistory(detail.getId());
+		        	client.publishWith().topic("nhom7/servo").qos(MqttQos.AT_LEAST_ONCE).payload("1".getBytes()).send();	
+		        }else {
+		        	
+		        }
+	        }else {
+	        	client.publishWith().topic("nhom7/no_license_plate").qos(MqttQos.AT_LEAST_ONCE).payload(licensePlate.getBytes()).send();
+	        }
+	        
 	        client.disconnect();
     	}
     }
@@ -51,7 +65,7 @@ public class MqttService {
     
     public String formatPublish(Detail detail) {
     	
-    	return detail.getId() + "//" + detail.getLicensePlate()+ "//" + detail.getOwnerName();
+    	return detail.getId() + "//" + detail.getOwnerName()+ "//" + detail.getLicensePlate()+ "//" + detail.getVehicleType() + "//" + detail.getVehicleSize();
     }
     
 }
