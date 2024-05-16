@@ -55,4 +55,9 @@ public class Detail {
 //	@JsonManagedReference
 	@OneToMany(mappedBy = "detail")
 	private List<History> histories;
+	
+	@JsonIgnore
+//	@JsonManagedReference
+	@OneToMany(mappedBy = "detail")
+	private List<Token> tokens;
 }

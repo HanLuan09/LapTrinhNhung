@@ -17,11 +17,12 @@ public class DetailService {
 				.orElseThrow(() -> new RuntimeException("Not Fount"));
 	}
 	
-	public boolean updateEtcBalance(String licensePlate) {
+	public boolean updateEtcBalance(String licensePlate, String cost) {
 		Detail oldDetail = detailRepository.findByLicensePlate(licensePlate).get();
 		int oldEtcBalance = Integer.parseInt(oldDetail.getEtcBalance());
-		if(oldEtcBalance >= 10000) {
-			String newEtcBalance = (oldEtcBalance - 10000) + "";
+		int realCost = Integer.parseInt(cost);
+		if(oldEtcBalance >= realCost) {
+			String newEtcBalance = (oldEtcBalance - realCost) + "";
 			if(detailRepository.updateEtcBalance(licensePlate, newEtcBalance) == 1) {
 				return true;
 			} else {

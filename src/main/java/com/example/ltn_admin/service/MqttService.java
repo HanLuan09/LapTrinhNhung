@@ -42,7 +42,7 @@ public class MqttService {
 	        Detail detail = getDetailByLicensePlate(licensePlate);
 	       
 	        if(detail != null) {
-	        	boolean result = detailService.updateEtcBalance(licensePlate);
+	        	boolean result = detailService.updateEtcBalance(licensePlate, setExpense(detail.getVehicleSize()));
 	        	
 		        System.out.println(detail);
 		        if(result) {
