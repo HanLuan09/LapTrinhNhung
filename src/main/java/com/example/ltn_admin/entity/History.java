@@ -20,7 +20,6 @@ import lombok.ToString;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@ToString
 @Entity
 @Table(name = "history")
 public class History {

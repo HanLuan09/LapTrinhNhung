@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.ltn_admin.entity.Detail;
+import com.example.ltn_admin.entity.History;
 import com.example.ltn_admin.repository.DetailRepository;
 import com.hivemq.client.mqtt.MqttClientState;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
@@ -40,15 +41,16 @@ public class MqttService {
 	        Detail detail = getDetailByLicensePlate(licensePlate);
 	       
 	        if(detail != null) {
-	        	client.publishWith().topic("nhom7/license_plate").qos(MqttQos.AT_LEAST_ONCE).payload(formatPublish(detail).getBytes()).send();
 	        	boolean result = detailService.updateEtcBalance(licensePlate);
-	        	
+	        
 		        System.out.println(detail);
 		        if(result) {
-		        	historyService.addHistory(detail.getId());
+		        	History history = historyService.addHistory(detail.getId(), setExpense(detail.getVehicleSize()));
+		        	client.publishWith().topic("nhom7/license_plate").qos(MqttQos.AT_LEAST_ONCE).payload(formatPublish(detail, history.getExpense()).getBytes()).send();
+		        	
 		        	client.publishWith().topic("nhom7/servo").qos(MqttQos.AT_LEAST_ONCE).payload("1".getBytes()).send();	
 		        }else {
-		        	
+		        	client.publishWith().topic("nhom7/license_plate").qos(MqttQos.AT_LEAST_ONCE).payload(formatPublish(detail, "null").getBytes()).send();
 		        }
 	        }else {
 	        	client.publishWith().topic("nhom7/no_license_plate").qos(MqttQos.AT_LEAST_ONCE).payload(licensePlate.getBytes()).send();
@@ -63,9 +65,18 @@ public class MqttService {
 				.orElseThrow(() -> new RuntimeException("Not Fount"));
 	}
     
-    public String formatPublish(Detail detail) {
+    public String formatPublish(Detail detail, String s) {
     	
-    	return detail.getId() + "//" + detail.getOwnerName()+ "//" + detail.getLicensePlate()+ "//" + detail.getVehicleType() + "//" + detail.getVehicleSize();
+    	return detail.getId() + "//" + detail.getOwnerName()+ "//" 
+    			+ detail.getLicensePlate()+ "//" + detail.getVehicleType() + "//" 
+    			+ detail.getVehicleSize() + "//" + s;
     }
-    
+    public String setExpense(String size) {
+    	if(size.equals("2 chỗ")) return "10000";
+    	else if(size.equals("4 chỗ")) return "10000";
+    	else if(size.equals("6 chỗ")) return "15000";
+    	else if(size.equals("16 chỗ")) return "16000";
+    	else if(size.equals("24 chỗ")) return "20000";
+    	return "22000";
+    }
 }

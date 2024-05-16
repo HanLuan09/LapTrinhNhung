@@ -58,13 +58,13 @@ public class HistoryService {
 		return histories;
 	}
 	
-	public void addHistory(int idDetail) {
+	public History addHistory(int idDetail, String expense ) {
 		
 		LocalDateTime date = LocalDateTime.now();
 		History history = new History();
 		history.setTollStationName("QL1-Hà Nội");
 		history.setTollStationAddress("Hà Nội");
-		history.setExpense("10000");
+		history.setExpense(expense);
 		history.setTime(date);
 		history.setPaymentStatus("Paid");
 		
@@ -72,6 +72,6 @@ public class HistoryService {
 		detail.setId(idDetail);
 		history.setDetail(detail);;
 		
-		historyRepository.save(history);		
+		return historyRepository.save(history);		
 	}
 }

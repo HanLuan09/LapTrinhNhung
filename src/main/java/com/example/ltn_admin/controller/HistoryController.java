@@ -75,7 +75,7 @@ public class HistoryController {
 	
 	@PostMapping("/history/add/{idDetail}")
 	public ApiResponse<Boolean> addHistory(@PathVariable("idDetail") int idDetail) throws ParseException{
-		historyService.addHistory(idDetail);
+		historyService.addHistory(idDetail, "10000");
 		ApiResponse<Boolean> apiResponse = ApiResponse.<Boolean>builder()
 				.success(true)
 				.code(200)
