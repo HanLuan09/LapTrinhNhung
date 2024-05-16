@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.ltn_admin.entity.Detail;
 import com.example.ltn_admin.entity.History;
+import com.example.ltn_admin.entity.Notification;
 import com.example.ltn_admin.repository.DetailRepository;
 import com.hivemq.client.mqtt.MqttClientState;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
@@ -42,9 +43,12 @@ public class MqttService {
 	       
 	        if(detail != null) {
 	        	boolean result = detailService.updateEtcBalance(licensePlate);
-	        
+	        	
 		        System.out.println(detail);
 		        if(result) {
+		        	Notification notification = new Notification(detail.getOwnerName(),detail.getLicensePlate(),"fpwvae0BQtGBjfVqOp1wjj:APA91bFay6KEQYmhSHQ63jWP3Mct_owNao9_JZIjLwsn_yhIUhBlO8N6L-FkM_61glq-MkDsUW5lzq1lLWpkxm8hCIscqmKN5TLKaO-ya3oWCnQ35xceu4idHQIvb8BV3hW9WEfAuOy5");
+		        	Utils.sendNotification(notification);
+		        	
 		        	History history = historyService.addHistory(detail.getId(), setExpense(detail.getVehicleSize()));
 		        	client.publishWith().topic("nhom7/license_plate").qos(MqttQos.AT_LEAST_ONCE).payload(formatPublish(detail, history.getExpense()).getBytes()).send();
 		        	
